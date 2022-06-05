@@ -23,6 +23,8 @@ from rest_framework import status
 latest_id = None
 question_bank_id = None
 code_id = None
+evaluation_id = None
+questionbankevaluation_id = None
 
 @api_view(['GET', 'POST', 'DELETE'])
 def demographic(request, pk=None):
@@ -212,3 +214,118 @@ def question(request, pk=None):
   stu = Question.objects.get(qid=id)
   stu.delete()
   return Response({'msg':'Data Deleted'})
+
+@api_view(['GET', 'POST', 'DELETE'])
+def evaluation(request, pk=None):
+ global evaluation_id
+ if request.method == 'GET': 
+  id = pk
+  if id is not None:
+   stu = Evaluation.objects.get(evid=id)
+   serializer = EvaluationSerializer(stu)
+   return Response(serializer.data)
+
+  stu = Evaluation.objects.all()
+  serializer = EvaluationSerializer(stu, many=True)
+  return Response(serializer.data)
+
+ if request.method == 'POST':
+  print("hello post ")
+  print("request data",request.data)
+  dic = request.data
+  print("user id", latest_id)
+  dic['ffuid'] = latest_id
+  serializer = EvaluationSerializer(data=dic)
+  print("user id",latest_id)
+  print("evaluation data",dic)
+  if serializer.is_valid():
+   serializer.save()
+   evaluation_id = Evaluation.objects.order_by('-evid')[0].evid
+   return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
+  return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+ if request.method == 'DELETE':
+  id = pk
+  stu = Evaluation.objects.get(evid=id)
+  stu.delete()
+  return Response({'msg':'Data Deleted'})
+
+@api_view(['GET', 'POST', 'DELETE'])
+def questionbankevaluation(request, pk=None):
+ global questionbankevaluation_id
+ if request.method == 'GET': 
+  id = pk
+  if id is not None:
+   stu = QuestionBankEvaluation.objects.get(evqbid=id)
+   serializer = QuestionBankEvaluationSerializer(stu)
+   return Response(serializer.data)
+
+  stu = QuestionBankEvaluation.objects.all()
+  serializer = QuestionBankEvaluationSerializer(stu, many=True)
+  return Response(serializer.data)
+
+ if request.method == 'POST':
+  print("hello post ")
+  print("request data",request.data)
+  dic = request.data
+  print("evaluaton id", evaluation_id)
+  dic['fevid'] = evaluation_id 
+  queries = request.query_params
+  dic['ffqbid'] = QuestionBank.objects.filter(level = queries['level'][0], admin_programming_language = queries['language'][0])[0].qbid
+  serializer = QuestionBankEvaluationSerializer(data=dic)
+  print("evaluation id id",evaluation_id)
+  print("question bank evaluation data",dic)
+  if serializer.is_valid():
+   serializer.save()
+   questionbankevaluation_id = QuestionBankEvaluation.objects.order_by('-evqbid')[0].evqbid
+   return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
+  return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+ if request.method == 'DELETE':
+  id = pk
+  stu = QuestionBankEvaluation.objects.get(evqbid=id)
+  stu.delete()
+  return Response({'msg':'Data Deleted'})
+
+@api_view(['GET', 'POST', 'DELETE'])
+def score(request, pk=None):
+ print("quesry params",request.query_params)
+ if request.method == 'GET': 
+  id = pk
+  if id is not None:
+   stu = Score.objects.get(sid=id)
+   serializer = ScoreSerializer(stu)
+   return Response(serializer.data)
+
+  stu = Score.objects.all()
+  serializer = ScoreSerializer(stu, many=True)
+  return Response(serializer.data)
+
+ if request.method == 'POST':
+  
+  print("hello post ")
+  print("request data",request.data)
+  dic = request.data
+  # print("questionbankevaluation_id id", questionbankevaluation_id)
+  # dic['fevqbid'] = questionbankevaluation_id
+  questionbankevaluation_id = 6 
+  temp_questionbank_id = QuestionBankEvaluation.objects.get(evqbid =questionbankevaluation_id).ffqbid
+  queries = request.query_params
+  temp_code_id = Code.objects.filter(fqbid = temp_questionbank_id)[int(queries['code_no'][0])].cid
+  temp_question_id = Question.objects.filter(fcid = temp_code_id)[int(queries['question_no'][0])].qid
+  dic['fqid'] = temp_question_id
+  if dic['selected_answer'] == Question.objects.get(qid = temp_question_id).correct_option:
+    dic['marks'] =  Question.objects.get(qid = temp_question_id).marks
+  serializer = ScoreSerializer(data=dic)
+  print("questionbankevaluation_id id",questionbankevaluation_id)
+  print("question bank evaluation data",dic)
+  if serializer.is_valid():
+   serializer.save()
+   return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
+  return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+ if request.method == 'DELETE':
+  id = pk
+  stu = Score.objects.get(sid=id)
+  stu.delete()
+  return Response({'msg':'Data Deleted'})  

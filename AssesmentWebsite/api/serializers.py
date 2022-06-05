@@ -35,3 +35,18 @@ class QuestionSerializer(serializers.ModelSerializer):
   class Meta:
     model = Question
     fields = '__all__'
+
+class EvaluationSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Evaluation
+    fields = '__all__'
+
+class QuestionBankEvaluationSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = QuestionBankEvaluation
+    fields = '__all__'
+
+class ScoreSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Score
+    fields = "__all__"

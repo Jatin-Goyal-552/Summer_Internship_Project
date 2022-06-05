@@ -64,6 +64,7 @@ class Code(models.Model):
     cid = models.AutoField(primary_key=True)
     fqbid = models.ForeignKey(QuestionBank,on_delete=models.CASCADE, null= True)
     code_image = models.ImageField()
+    code_text = models.CharField(max_length=500, null=True)
     code_time = models.IntegerField(null=True)
     @property
     def imageURL(self):
@@ -84,4 +85,20 @@ class Question(models.Model):
     correct_option = models.CharField(max_length=500, null=True)
     marks = models.FloatField(null=True)
     question_time = models.IntegerField(null=True)
+
+class Evaluation(models.Model):
+    evid = models.AutoField(primary_key=True)
+    ffuid = models.ForeignKey(Demographic, on_delete=models.CASCADE, null= True)
+
+class QuestionBankEvaluation(models.Model):
+    evqbid = models.AutoField(primary_key=True)
+    fevid = models.ForeignKey(Evaluation, on_delete=models.CASCADE, null= True)
+    ffqbid = models.ForeignKey(QuestionBank,on_delete=models.CASCADE, null= True)
+
+class Score(models.Model):
+    sid = models.AutoField(primary_key=True)
+    fevqbid = models.ForeignKey(QuestionBankEvaluation, on_delete=models.CASCADE, null= True)
+    fqid = models.ForeignKey(Question, on_delete=models.CASCADE, null= True)
+    selected_answer = models.CharField(max_length=500, null=True)
+    marks = models.FloatField(null=True)
     

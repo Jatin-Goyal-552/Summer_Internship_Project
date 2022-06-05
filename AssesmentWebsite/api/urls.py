@@ -13,4 +13,11 @@ urlpatterns=[
     path('code/<pk>', views.code, name='code2'),
     path('question/', views.question, name='question'),
     path('question/<pk>', views.question, name='question2'),
+    path('evaluation/', views.evaluation, name='evaluation'),
+    path('evaluation/<pk>', views.evaluation, name='evaluation2'),
+    path('questionbankevaluation/', views.questionbankevaluation, name='questionbankevaluation'),
+    path('questionbankevaluation/<pk>', views.questionbankevaluation, name='questionbankevaluation2'),
+    path('score/', views.score, name='score'),
+    path('score/<pk>', views.score, name = 'score2')
+    
 ]
