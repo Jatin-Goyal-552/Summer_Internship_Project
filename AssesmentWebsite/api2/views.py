@@ -18,6 +18,9 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+import collections
+import csv
+import pandas as pd
 
 
 latest_id = None
@@ -272,7 +275,8 @@ def evaluation(request, pk=None):
   dic = request.data
   print("user id", latest_id)
   dic['ffuid'] = latest_id
-  dic['']
+  questionbanklang = Expertise.objects.get(fuid=latest_id).programming_language
+  dic['ffqbid'] = QuestionBank.objects.get(admin_programming_language = questionbanklang).qbid
   serializer = EvaluationSerializer(data=dic)
   print("user id",latest_id)
   print("evaluation data",dic)
@@ -345,8 +349,8 @@ def evaluation(request, pk=None):
 #   print("request data",request.data)
 #   dic = request.data
 #   # print("questionbankevaluation_id id", questionbankevaluation_id)
-#   # dic['fevqbid'] = questionbankevaluation_id
-#   questionbankevaluation_id = 6 
+#   dic['fevid'] = evaluation_id
+# #   questionbankevaluation_id = 6 
 #   temp_questionbank_id = QuestionBankEvaluation.objects.get(evqbid =questionbankevaluation_id).ffqbid
 #   queries = request.query_params
 #   temp_code_id = Code.objects.filter(fqbid = temp_questionbank_id)[int(queries['code_no'][0])].cid
@@ -367,3 +371,90 @@ def evaluation(request, pk=None):
 #   stu = Score.objects.get(sid=id)
 #   stu.delete()
 #   return Response({'msg':'Data Deleted'})  
+
+def download(request):
+    # global response_id
+    # print("============", response_id)
+    question_ids = []
+    correct_answers = []
+    selected_answers = []
+    marks = []
+    decisions = []
+    code_ids = []
+    dic = collections.defaultdict(list)
+    user_id = 1
+    program_language = Expertise.objects.get(fuid = user_id).programming_language
+    levels = ["1", "2"]
+    question_bank_id = QuestionBank.objects.get(admin_programming_language = program_language).qbid
+    question_bank_level_ids = []
+    print("user id", user_id, "programming language",program_language,"question_bank_id",question_bank_id, "levels", levels,  "code_ids", code_ids, "question_ids", question_ids,"correct_answers",correct_answers,"selected_answers",selected_answers,"marks",marks,"decisions",decisions)
+    # print(QuestionBankLevel.objects.filter(fqbid = question_bank_id, qlevel = "1"))
+    for index, level in enumerate(levels):
+        question_bank_level_ids.append(QuestionBankLevel.objects.filter(fqbid = question_bank_id, qlevel = level)[0].qblid)
+        
+    # code_ids = []
+    
+    for id in question_bank_level_ids:
+        code_ids.append(Code.objects.filter(fqblid = id)[0].cid)
+        code_ids.append(Code.objects.filter(fqblid = id)[1].cid)
+        
+    # question_ids = []
+    # correct_answers = []
+    # selected_answers = []
+    # marks = []
+    # decisions = []
+    for id in code_ids:
+        question_ids.append(Question.objects.filter(fcid = id)[0].qid)
+        question_ids.append(Question.objects.filter(fcid = id)[1].qid)
+        question_ids.append(Question.objects.filter(fcid = id)[2].qid)
+        # question_ids.append(Question.objects.filter(fcid = id)[3].qid)
+        # question_ids.append(Question.objects.filter(fcid = id)[4].qid)
+    
+    evaluation_id = Evaluation.objects.get(ffuid = user_id, ffqbid = question_bank_id).evid
+    for id in question_ids:
+        correct_answers.append(Question.objects.get(qid = id).correct_option)
+        selected_answers.append(Score.objects.get(fevid = evaluation_id, fqid = id).selected_answer)
+        marks.append(Score.objects.get(fevid = evaluation_id, fqid = id).marks)
+        decisions.append(Score.objects.get(fevid = evaluation_id, fqid = id).decision)
+        
+    print("user id", user_id, "programming language",program_language, "levels", levels,  "code_ids", code_ids, "question_ids", question_ids,"correct_answers",correct_answers,"selected_answers",selected_answers,"marks",marks,"decisions",decisions)
+        
+    # code1 = Code.objects.filter(fqblid = question_bank_level_id)[0].cid
+    # print("question_bank_level_id", question_bank_level_id1, "code", code1)
+    # question1 = Question.objects.filter(fcid = code1)[0].qid
+    # question1 = Question.objects.get(qid = question1).correct_option
+    
+    n = len(question_ids)
+    # responses = Apply.objects.filter(internship=response_id)
+    dic['User'] = [user_id]*n
+    dic['Programming language'] = [program_language]*n
+    dic['Level'] = ([levels[0]]*int(n/2)) + ([levels[1]]*int(n/2))
+    dic['Code']  = ([code_ids[0]]*int(n/4)) +  ([code_ids[1]]*int(n/4)) +  ([code_ids[2]]*int(n/4)) +  ([code_ids[3]]*int(n/4))
+    dic['Question'] = question_ids
+    dic['Selected answer'] = selected_answers
+    dic['Correct answer'] = correct_answers
+    dic['Decision'] = decisions
+    dic['Marks'] = marks
+    # print(([levels[0]]*int(n/2)) + (([levels[1]]*int(n/2))))
+    print(dic)
+    # for i in range(len(responses)):
+    #     dic['user'].append(responses[i].user.username)
+    #     dic['user_name'].append(responses[i].user_name)
+    #     dic['user_email'].append(responses[i].user_email)
+    #     dic['phone_number'].append(responses[i].phone_number)
+    #     dic['sem'].append(responses[i].sem)
+    #     dic['cpi'].append(responses[i].cpi)
+    #     dic['precentage_10'].append(responses[i].precentage_10)
+    #     dic['precentage_12'].append(responses[i].precentage_12)
+    # print(dic)
+    df = pd.DataFrame(dic)
+
+    response = HttpResponse(content_type='text/csv')
+    # your filename
+    response['Content-Disposition'] = 'attachment; filename="data.csv"'
+    writer = csv.writer(response)
+    writer.writerow(['S.No.', 'User', 'Programming language', 'Level', 'Code', 'Question', 'Selected answer', 'Correct answer', 'Decision', 'Marks'])
+    for ind in range(df.shape[0]):
+        writer.writerow([ind, df['User'][ind], df['Programming language'][ind], df['Level'][ind],df['Code'][ind],df['Question'][ind],df['Selected answer'][ind],df['Correct answer'][ind],df['Decision'][ind], df['Marks'][ind]])
+
+    return response

@@ -31,6 +31,11 @@ duration_choices =(
     ("2", "1-3 years"),
     ("3", ">3 years")
 )
+
+decision_choices =(
+    ("1", "Correct"),
+    ("2", "Incorrect")
+)
 # Create your models here.
 class Demographic(models.Model):
     uid = models.AutoField(primary_key=True)
@@ -109,5 +114,6 @@ class Score(models.Model):
     fevid = models.ForeignKey(Evaluation, on_delete=models.CASCADE, null= True)
     fqid = models.ForeignKey(Question, on_delete=models.CASCADE, null= True)
     selected_answer = models.CharField(max_length=500, null=True)
+    decision = models.CharField(choices=decision_choices, max_length=100, null=True)
     marks = models.FloatField(null=True)
     

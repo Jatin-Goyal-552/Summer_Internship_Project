@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
-import api
-from api import views
+import api2
+from api2 import views
 from rest_framework.routers import DefaultRouter
 from django.conf.urls.static import static
 from AssesmentWebsite import settings
@@ -14,5 +14,5 @@ from AssesmentWebsite import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('api.urls')),
+    path('', include('api2.urls')),
 ]+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
