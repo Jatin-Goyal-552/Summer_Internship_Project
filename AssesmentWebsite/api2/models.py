@@ -57,7 +57,7 @@ class Expertise(models.Model):
     level = models.CharField(choices=level_choices, max_length=100)
     duration = models.CharField(choices=duration_choices, max_length=100)
     time = models.IntegerField()
-    last_used = models.CharField(max_length=100, null=True, blank=True)
+    last_used = models.DateField(null=True, blank=True)
  
 class QuestionBank(models.Model):
     qbid = models.AutoField(primary_key=True)
