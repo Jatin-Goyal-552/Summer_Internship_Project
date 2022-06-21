@@ -61,7 +61,7 @@ def demographic(request, pk=None):
   stu.delete()
   return Response({'msg':'Data Deleted'})
 
-@api_view(['GET', 'POST', 'DELETE'])
+@api_view(['GET', 'POST','PUT', 'DELETE'])
 def expertise(request, pk=None):
  global latest_id
  if request.method == 'GET': 
@@ -87,6 +87,17 @@ def expertise(request, pk=None):
   #  latest_id = Demographic.objects.order_by(by = 'uid')[0].uid
    return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
   return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+  
+ if request.method == 'PUT':
+    id = pk
+    # print("id",id)
+    stu = Expertise.objects.get(eid=id)
+    serializer = ExpertiseSerializer(stu, data=request.data, partial=True)
+    if serializer.is_valid():
+      serializer.save()
+      return Response({'msg':'Data Updated'})
+    return Response(serializer.errors)
+
 
  if request.method == 'DELETE':
   id = pk
