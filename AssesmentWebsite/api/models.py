@@ -52,7 +52,7 @@ class Expertise(models.Model):
     level = models.CharField(choices=level_choices, max_length=100)
     duration = models.CharField(choices=duration_choices, max_length=100)
     time = models.IntegerField()
-    last_used = models.IntegerField()
+    last_used = models.DateField()
  
 class QuestionBank(models.Model):
     qbid = models.AutoField(primary_key=True)
@@ -71,9 +71,9 @@ class Code(models.Model):
     code_image = models.ImageField()
     code_text = models.CharField(max_length=500, null=True)
     code_time = models.IntegerField(null=True)
-    code_read_time = models.IntegerField(null=True)
+    # code_read_time = models.IntegerField(null=True)
     question_time = models.IntegerField(null=True)
-    question_read_time = models.IntegerField(null=True)
+    # question_read_time = models.IntegerField(null=True)
     @property
     def imageURL(self):
         try:
