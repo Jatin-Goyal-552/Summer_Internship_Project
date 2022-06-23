@@ -83,7 +83,7 @@ class CodeSerializer(serializers.ModelSerializer):
     )
   class Meta:
     model = Code
-    fields = '__all__'
+    fields = ("fqblid", "code_image", "")
 
 class QuestionSerializer(serializers.ModelSerializer):
   class Meta:
