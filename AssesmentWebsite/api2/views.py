@@ -170,7 +170,7 @@ def questionbanklevel(request, pk=None):
  if request.method == 'GET': 
   id = pk
   if id is not None:
-   stu = QuestionBankLevel.objects.get(qbid=id)
+   stu = QuestionBankLevel.objects.get(qblid=id)
    serializer = QuestionBankLevelSerializer(stu)
    return Response(serializer.data)
 
@@ -194,7 +194,7 @@ def questionbanklevel(request, pk=None):
 
  if request.method == 'DELETE':
   id = pk
-  stu = QuestionBankLevel.objects.get(qbid=id)
+  stu = QuestionBankLevel.objects.get(qblid=id)
   stu.delete()
   return Response({'msg':'Data Deleted'})
 
