@@ -473,3 +473,26 @@ def download(request):
         writer.writerow([ind, df['User'][ind], df['Programming language'][ind], df['Level'][ind],df['Code'][ind],df['Question'][ind],df['Selected answer'][ind],df['Correct answer'][ind],df['Decision'][ind], df['Marks'][ind]])
 
     return response
+  
+
+
+
+@api_view(['GET', 'POST', 'DELETE'])
+def getcode(request):
+  if request.method == 'GET': 
+    # id = pk
+    print("quesry params",request.query_params)
+    latest_id = 1
+    programming_language = Expertise.objects.get(fuid = latest_id).programming_language
+    question_bank_id = QuestionBank.objects.get(admin_programming_language = programming_language).qbid
+    queries = request.query_params
+    level = QuestionBankLevel.objects.get(fqbid = question_bank_id, qlevel = queries['level'][0]).qblid
+    id = Code.objects.filter(fqblid = level)[int(queries['code'][0])].cid
+    
+    stu = Code.objects.get(cid=id)
+    serializer = CodeSerializer(stu)
+    return Response(serializer.data)
+
+    # stu = Code.objects.all()
+    # serializer = CodeSerializer(stu, many=True)
+    # return Response(serializer.data)

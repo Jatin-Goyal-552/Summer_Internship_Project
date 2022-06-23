@@ -21,6 +21,7 @@ urlpatterns=[
     # path('questionbankevaluation/<pk>', views.questionbankevaluation, name='questionbankevaluation2'),
     path('score/', views.score, name='score'),
     path('score/<pk>', views.score, name = 'score2'),
-    path('download', views.download, name = 'download')
+    path('download', views.download, name = 'download'),
+    path('getcode/', views.getcode, name = 'getcode')
     
 ]
