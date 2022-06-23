@@ -117,3 +117,9 @@ class Score(models.Model):
     decision = models.CharField(choices=decision_choices, max_length=100, null=True)
     marks = models.FloatField(null=True)
     
+class Time(models.Model):
+    tid = models.AutoField(primary_key=True)
+    ffevid = models.ForeignKey(Evaluation, on_delete=models.CASCADE, null= True)
+    fcfid = models.ForeignKey(Code, on_delete=models.CASCADE, null= True)
+    question_read_time = models.IntegerField(null=True)
+    code_read_time = models.IntegerField(null=True)
