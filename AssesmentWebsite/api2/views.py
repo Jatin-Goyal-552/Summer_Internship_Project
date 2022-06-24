@@ -29,6 +29,7 @@ question_bank_level_id = None
 code_id = None
 evaluation_id = None
 questionbankevaluation_id = None
+question_code_id = None
 
 
 
@@ -341,6 +342,44 @@ def evaluation(request, pk=None):
 #   return Response({'msg':'Data Deleted'})
 
 @api_view(['GET', 'POST', 'DELETE'])
+def getcode(request):
+  global question_code_id
+  if request.method == 'GET': 
+    # id = pk
+    print("quesry params",request.query_params)
+    latest_id = 1
+    programming_language = Expertise.objects.get(fuid = latest_id).programming_language
+    question_bank_id = QuestionBank.objects.get(admin_programming_language = programming_language).qbid
+    queries = request.query_params
+    level = QuestionBankLevel.objects.get(fqbid = question_bank_id, qlevel = queries['level'][0]).qblid
+    question_code_id = Code.objects.filter(fqblid = level)[int(queries['code'][0])].cid
+    
+    stu = Code.objects.get(cid=question_code_id)
+    serializer = CodeSerializer(stu)
+    return Response(serializer.data)
+
+    # stu = Code.objects.all()
+    # serializer = CodeSerializer(stu, many=True)
+    # return Response(serializer.data)
+  
+@api_view(['GET', 'POST', 'DELETE'])
+def getquestion(request):
+  if request.method == 'GET': 
+    # id = pk
+    question_code_id = 1
+    print("quesry params",request.query_params)
+    latest_id = 1
+    # programming_language = Question.objects.get(fcid = question_code_id).programming_language
+    # question_bank_id = QuestionBank.objects.get(admin_programming_language = programming_language).qbid
+    queries = request.query_params
+    # level = QuestionBankLevel.objects.get(fqbid = question_bank_id, qlevel = queries['level'][0]).qblid
+    id = Question.objects.filter(fcid = latest_id)[int(queries['question'][0])].qid
+    
+    stu = Question.objects.get(qid=id)
+    serializer = QuestionSerializer(stu)
+    return Response(serializer.data)
+
+@api_view(['GET', 'POST', 'DELETE'])
 def score(request, pk=None):
  print("quesry params",request.query_params)
  if request.method == 'GET': 
@@ -477,23 +516,5 @@ def download(request):
 
 
 
-@api_view(['GET', 'POST', 'DELETE'])
-def getcode(request):
-  if request.method == 'GET': 
-    # id = pk
-    print("quesry params",request.query_params)
-    latest_id = 1
-    programming_language = Expertise.objects.get(fuid = latest_id).programming_language
-    question_bank_id = QuestionBank.objects.get(admin_programming_language = programming_language).qbid
-    queries = request.query_params
-    level = QuestionBankLevel.objects.get(fqbid = question_bank_id, qlevel = queries['level'][0]).qblid
-    id = Code.objects.filter(fqblid = level)[int(queries['code'][0])].cid
-    
-    stu = Code.objects.get(cid=id)
-    serializer = CodeSerializer(stu)
-    return Response(serializer.data)
 
-    # stu = Code.objects.all()
-    # serializer = CodeSerializer(stu, many=True)
-    # return Response(serializer.data)
 
