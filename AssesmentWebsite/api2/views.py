@@ -496,3 +496,4 @@ def getcode(request):
     # stu = Code.objects.all()
     # serializer = CodeSerializer(stu, many=True)
     # return Response(serializer.data)
+

@@ -97,7 +97,7 @@ class Question(models.Model):
     option4 = models.CharField(max_length=500, null=True)
     correct_option = models.CharField(max_length=500, null=True)
     marks = models.FloatField(null=True)
-    question_time = models.IntegerField(null=True)
+    # question_time = models.IntegerField(null=True)
 
 class Evaluation(models.Model):
     evid = models.AutoField(primary_key=True)
