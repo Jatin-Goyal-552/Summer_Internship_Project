@@ -319,9 +319,11 @@ def score(request, pk=None):
         print("request data",request.data)
         dic = request.data
         # print("questionbankevaluation_id id", questionbankevaluation_id)
-        dic['fevid'] = request.session['evaluation_id']
+        # dic['fevid'] = request.session['evaluation_id']
+        dic['fevid'] = None
         #   questionbankevaluation_id = 6 
-        language = Expertise.objects.get(fuid=request.session['user_id']).programming_language
+        # language = Expertise.objects.get(fuid=request.session['user_id']).programming_language
+        language = Expertise.objects.get(fuid=1).programming_language
         temp_questionbank_id = QuestionBank.objects.get(admin_programming_language = language).qbid
         queries = request.query_params
         temp_questionbanklevel_id = QuestionBankLevel.objects.get(fqbid = temp_questionbank_id, qlevel =queries['level'][0] )
@@ -332,6 +334,10 @@ def score(request, pk=None):
         dic['fqid'] = temp_question_id
         if dic['selected_answer'] == Question.objects.get(qid = temp_question_id).correct_option:
             dic['marks'] =  Question.objects.get(qid = temp_question_id).marks
+            dic['decision'] = 1
+        else:
+            dic['marks'] =  0
+            dic['decision'] = 0
         serializer = ScoreSerializer(data=dic)
         # print("questionbankevaluation_id id",questionbankevaluation_id)
         print("question bank evaluation data",dic)
