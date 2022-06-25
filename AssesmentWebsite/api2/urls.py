@@ -21,5 +21,7 @@ urlpatterns=[
     path('score/<pk>', views.score, name = 'score2'),
     path('download', views.download, name = 'download'),
     path('getcode/', views.getcode, name = 'getcode'),
-    path('getquestion/', views.getquestion, name = 'getquestion')
+    path('getquestion/', views.getquestion, name = 'getquestion'),
+    path('time/', views.time, name='time'),
+    path('time/<pk>', views.time, name='time2')
 ]

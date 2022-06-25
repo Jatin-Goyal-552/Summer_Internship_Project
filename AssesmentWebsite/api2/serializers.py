@@ -103,3 +103,8 @@ class ScoreSerializer(serializers.ModelSerializer):
   class Meta:
     model = Score
     fields = "__all__"
+    
+class TimeSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Time
+    fields = "__all__"
