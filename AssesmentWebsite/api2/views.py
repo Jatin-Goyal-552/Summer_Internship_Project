@@ -334,10 +334,10 @@ def score(request, pk=None):
         dic['fqid'] = temp_question_id
         if dic['selected_answer'] == Question.objects.get(qid = temp_question_id).correct_option:
             dic['marks'] =  Question.objects.get(qid = temp_question_id).marks
-            dic['decision'] = 1
+            dic['decision'] = "1"
         else:
             dic['marks'] =  0
-            dic['decision'] = 0
+            dic['decision'] = "2"
         serializer = ScoreSerializer(data=dic)
         # print("questionbankevaluation_id id",questionbankevaluation_id)
         print("question bank evaluation data",dic)
