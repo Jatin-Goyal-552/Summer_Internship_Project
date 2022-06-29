@@ -75,9 +75,9 @@ class Code(models.Model):
     fqblid = models.ForeignKey(QuestionBankLevel,on_delete=models.CASCADE, null= True)
     code_image = models.ImageField()
     code_text = models.CharField(max_length=500, null=True)
-    code_time = models.IntegerField(null=True)
+    code_time = models.FloatField(null=True)
     # code_read_time = models.IntegerField(null=True)
-    question_time = models.IntegerField(null=True)
+    question_time = models.FloatField(null=True)
     # question_read_time = models.IntegerField(null=True)
     @property
     def imageURL(self):
@@ -121,5 +121,5 @@ class Time(models.Model):
     tid = models.AutoField(primary_key=True)
     ffevid = models.ForeignKey(Evaluation, on_delete=models.CASCADE, null= True)
     fcfid = models.ForeignKey(Code, on_delete=models.CASCADE, null= True)
-    question_read_time = models.IntegerField(null=True)
-    code_read_time = models.IntegerField(null=True)
+    question_read_time = models.FloatField(null=True)
+    code_read_time = models.FloatField(null=True)
