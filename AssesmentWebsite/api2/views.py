@@ -143,7 +143,8 @@ def questionbank(request, pk=None):
         if serializer.is_valid():
             serializer.save()
             request.session['question_bank_id'] = QuestionBank.objects.order_by('-qbid')[0].qbid
-            return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
+            print("question_bank_id", request.session['question_bank_id'])
+            return Response({'msg':'Data Created',"question_bank_id":request.session['question_bank_id']}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'DELETE':
