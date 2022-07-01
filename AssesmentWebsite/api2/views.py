@@ -23,18 +23,19 @@ import csv
 import pandas as pd
 
 # request.session['user_id'] = None 
-# user_id = None
-# question_bank_id = None
-# question_bank_level_id = None
-# code_id = None
-# evaluation_id = None
+user_id = None
+question_bank_id = None
+question_bank_level_id = None
+code_id = None
+evaluation_id = None
 # questionbankevaluation_id = None
-# question_code_id = None
+user_code_id = None
 
 
 
 @api_view(['GET', 'POST', 'DELETE'])
 def demographic(request, pk=None):
+    global user_id
     if request.method == 'GET': 
         id = pk
         if id is not None:
@@ -51,7 +52,9 @@ def demographic(request, pk=None):
         if serializer.is_valid():
             print("now i am here")
             serializer.save()
-            request.session['user_id'] = Demographic.objects.order_by('-uid')[0].uid 
+            # request.session['user_id'] = Demographic.objects.order_by('-uid')[0].uid 
+            user_id = Demographic.objects.order_by('-uid')[0].uid 
+            
             return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -76,7 +79,9 @@ def expertise(request, pk=None):
 
     if request.method == 'POST':
         dic = request.data
-        dic['fuid'] = request.session['user_id']
+        # dic['fuid'] = request.session['user_id']
+        dic['fuid'] = user_id
+        
         serializer = ExpertiseSerializer(data=dic)
         if serializer.is_valid():
             serializer.save()
@@ -125,7 +130,7 @@ def login1(request):
   
 @api_view(['GET', 'POST', 'DELETE'])
 def questionbank(request, pk=None):
-    # global question_bank_id
+    global question_bank_id
     if request.method == 'GET': 
         id = pk
         if id is not None:
@@ -142,9 +147,11 @@ def questionbank(request, pk=None):
         serializer = QuestionBankSerializer(data=dic)
         if serializer.is_valid():
             serializer.save()
-            request.session['question_bank_id'] = QuestionBank.objects.order_by('-qbid')[0].qbid
-            print("question_bank_id", request.session['question_bank_id'])
-            return Response({'msg':'Data Created',"question_bank_id":request.session['question_bank_id']}, status=status.HTTP_201_CREATED)
+            # request.session['question_bank_id'] = QuestionBank.objects.order_by('-qbid')[0].qbid
+            question_bank_id = QuestionBank.objects.order_by('-qbid')[0].qbid
+            
+            # print("question_bank_id", request.session['question_bank_id'])
+            return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     if request.method == 'DELETE':
@@ -155,6 +162,7 @@ def questionbank(request, pk=None):
 
 @api_view(['GET', 'POST', 'DELETE'])
 def questionbanklevel(request, pk=None):
+    global question_bank_level_id
     if request.method == 'GET': 
         id = pk
         if id is not None:
@@ -168,11 +176,15 @@ def questionbanklevel(request, pk=None):
 
     if request.method == 'POST':
         dic = request.data
-        dic['fqbid'] = request.session['question_bank_id']
+        # dic['fqbid'] = request.session['question_bank_id']
+        dic['fqbid'] = question_bank_id
+        
         serializer = QuestionBankLevelSerializer(data=dic)
         if serializer.is_valid():
             serializer.save()
-            request.session['question_bank_level_id'] = QuestionBankLevel.objects.order_by('-qblid')[0].qblid
+            # request.session['question_bank_level_id'] = QuestionBankLevel.objects.order_by('-qblid')[0].qblid
+            question_bank_level_id = QuestionBankLevel.objects.order_by('-qblid')[0].qblid
+            
             return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -185,6 +197,7 @@ def questionbanklevel(request, pk=None):
 
 @api_view(['GET', 'POST', 'DELETE'])
 def code(request, pk=None):
+    global code_id
     if request.method == 'GET': 
         id = pk
         if id is not None:
@@ -198,11 +211,15 @@ def code(request, pk=None):
 
     if request.method == 'POST':
         dic = request.data
-        dic['fqblid'] = request.session['question_bank_level_id']
+        # dic['fqblid'] = request.session['question_bank_level_id']
+        dic['fqblid'] = question_bank_level_id
+        
         serializer = CodeSerializer(data=dic)
         if serializer.is_valid():
             serializer.save()
-            request.session['code_id'] = Code.objects.order_by('-cid')[0].cid
+            # request.session['code_id'] = Code.objects.order_by('-cid')[0].cid
+            code_id = Code.objects.order_by('-cid')[0].cid
+            
             return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -228,7 +245,9 @@ def question(request, pk=None):
 
     if request.method == 'POST':
         dic = request.data
-        dic['fcid'] = request.session['code_id'] 
+        # dic['fcid'] = request.session['code_id']
+        dic['fcid'] = code_id
+         
         serializer = QuestionSerializer(data=dic)
         if serializer.is_valid():
             serializer.save()
@@ -243,6 +262,7 @@ def question(request, pk=None):
 
 @api_view(['GET', 'POST', 'DELETE'])
 def evaluation(request, pk=None):
+    global evaluation_id
     if request.method == 'GET': 
         id = pk
         if id is not None:
@@ -256,13 +276,19 @@ def evaluation(request, pk=None):
 
     if request.method == 'POST':
         dic = request.data
-        dic['ffuid'] = request.session['user_id']
-        questionbanklang = Expertise.objects.get(fuid=request.session['user_id']).programming_language
+        # dic['ffuid'] = request.session['user_id']
+        dic['ffuid'] = user_id
+        
+        # questionbanklang = Expertise.objects.get(fuid=request.session['user_id']).programming_language
+        questionbanklang = Expertise.objects.get(fuid=user_id).programming_language
+        
         dic['ffqbid'] = QuestionBank.objects.get(admin_programming_language = questionbanklang).qbid
         serializer = EvaluationSerializer(data=dic)
         if serializer.is_valid():
             serializer.save()
-            request.session['evaluation_id'] = Evaluation.objects.order_by('-evid')[0].evid
+            # request.session['evaluation_id'] = Evaluation.objects.order_by('-evid')[0].evid
+            evaluation_id = Evaluation.objects.order_by('-evid')[0].evid
+            
             return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -274,15 +300,18 @@ def evaluation(request, pk=None):
 
 @api_view(['GET'])
 def getcode(request):
+    global user_code_id
     if request.method == 'GET': 
-        user_id = 1
+        # user_id = 1\
         programming_language = Expertise.objects.get(fuid = user_id).programming_language
         question_bank_id = QuestionBank.objects.get(admin_programming_language = programming_language).qbid
         queries = request.query_params
         level = QuestionBankLevel.objects.get(fqbid = question_bank_id, qlevel = queries['level'][0]).qblid
-        request.session['question_code_id'] = Code.objects.filter(fqblid = level)[int(queries['code'][0])].cid
+        # request.session['question_code_id'] = Code.objects.filter(fqblid = level)[int(queries['code'][0])].cid
+        user_code_id = Code.objects.filter(fqblid = level)[int(queries['code'][0])].cid
         
-        stu = Code.objects.get(cid=request.session['question_code_id'])
+        # stu = Code.objects.get(cid=request.session['question_code_id'])
+        stu = Code.objects.get(cid=user_code_id)
         serializer = CodeSerializer(stu)
         return Response(serializer.data)
 
@@ -320,11 +349,11 @@ def score(request, pk=None):
         print("request data",request.data)
         dic = request.data
         # print("questionbankevaluation_id id", questionbankevaluation_id)
-        # dic['fevid'] = request.session['evaluation_id']
-        dic['fevid'] = None
+        dic['fevid'] = evaluation_id
+        # dic['fevid'] = None
         #   questionbankevaluation_id = 6 
         # language = Expertise.objects.get(fuid=request.session['user_id']).programming_language
-        language = Expertise.objects.get(fuid=1).programming_language
+        language = Expertise.objects.get(fuid=user_id).programming_language
         temp_questionbank_id = QuestionBank.objects.get(admin_programming_language = language).qbid
         queries = request.query_params
         temp_questionbanklevel_id = QuestionBankLevel.objects.get(fqbid = temp_questionbank_id, qlevel =queries['level'][0] )
@@ -374,10 +403,12 @@ def time(request, pk=None):
         dic = request.data
         # print("questionbankevaluation_id id", questionbankevaluation_id)
         # dic['fevid'] = request.session['evaluation_id']
-        dic['ffevid'] = None
+        # dic['ffevid'] = None
         #   questionbankevaluation_id = 6 
         # language = Expertise.objects.get(fuid=request.session['user_id']).programming_language
-        language = Expertise.objects.get(fuid=1).programming_language
+        dic['fevid'] = evaluation_id
+        
+        language = Expertise.objects.get(fuid=user_id).programming_language
         temp_questionbank_id = QuestionBank.objects.get(admin_programming_language = language).qbid
         queries = request.query_params
         temp_questionbanklevel_id = QuestionBankLevel.objects.get(fqbid = temp_questionbank_id, qlevel =queries['level'][0] )
