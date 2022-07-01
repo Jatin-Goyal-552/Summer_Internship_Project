@@ -1,15 +1,16 @@
 import requests
+import json
 
-url = "https://summerinternshipproject.pythonanywhere.com/code/"
+url = "https://summerinternshipproject.pythonanywhere.com/questionbanklevel/"
 
-payload={'code_text': 'hello',
-'code_time': '30',
-'question_time': '60'}
-files=[
-  ('code_image',('photo2.jpg.jpeg',open('C:/Users/LENOVO/Downloads/photo2.jpg.jpeg','rb'),'image/jpeg'))
-]
-headers = {}
+payload = json.dumps({
+  "qlevel": "1"
+})
+headers = {
+  'Content-Type': 'application/json',
+  'Cookie': 'csrftoken=25dmhhLvfni2MT5fKWEC6QLXa78TiQQLIov0g0MCjDv4nU6gLmH2xIL3OSvDMBgW; sessionid=trvfjgwt7uxalg81djexqqitaude46va'
+}
 
-response = requests.request("POST", url, headers=headers, data=payload, files=files)
+response = requests.request("POST", url, headers=headers, data=payload)
 
 print(response.text)
