@@ -320,11 +320,11 @@ def getcode(request):
 def getquestion(request):
     if request.method == 'GET': 
         # request.session['question_code_id'] = 1
-        question_code_id = 1
+        # question_code_id = 1
         print("quesry params",request.query_params)
-        user_id = 1
+        # user_id = 1
         queries = request.query_params
-        id = Question.objects.filter(fcid = user_id)[int(queries['question'][0])].qid
+        id = Question.objects.filter(fcid = user_code_id)[int(queries['question'][0])].qid
         stu = Question.objects.get(qid=id)
         serializer = QuestionSerializer(stu)
         return Response(serializer.data)
@@ -356,7 +356,7 @@ def score(request, pk=None):
         language = Expertise.objects.get(fuid=user_id).programming_language
         temp_questionbank_id = QuestionBank.objects.get(admin_programming_language = language).qbid
         queries = request.query_params
-        temp_questionbanklevel_id = QuestionBankLevel.objects.get(fqbid = temp_questionbank_id, qlevel =queries['level'][0] )
+        temp_questionbanklevel_id = QuestionBankLevel.objects.get(fqbid = temp_questionbank_id, qlevel = queries['level'][0] )
         #   temp_questionbank_id = QuestionBankEvaluation.objects.get(evqbid =questionbankevaluation_id).ffqbid
         #   queries = request.query_params
         temp_code_id = Code.objects.filter(fqblid = temp_questionbanklevel_id)[int(queries['code_no'][0])].cid
@@ -411,7 +411,7 @@ def time(request, pk=None):
         language = Expertise.objects.get(fuid=user_id).programming_language
         temp_questionbank_id = QuestionBank.objects.get(admin_programming_language = language).qbid
         queries = request.query_params
-        temp_questionbanklevel_id = QuestionBankLevel.objects.get(fqbid = temp_questionbank_id, qlevel =queries['level'][0] )
+        temp_questionbanklevel_id = QuestionBankLevel.objects.get(fqbid = temp_questionbank_id, qlevel = queries['level'][0] )
         #   temp_questionbank_id = QuestionBankEvaluation.objects.get(evqbid =questionbankevaluation_id).ffqbid
         #   queries = request.query_params
         temp_code_id = Code.objects.filter(fqblid = temp_questionbanklevel_id)[int(queries['code_no'][0])].cid
