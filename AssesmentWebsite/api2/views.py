@@ -439,11 +439,11 @@ def time(request, pk=None):
         return Response({'msg':'Data Deleted'})  
 
 def getlanguage(id):
-    if id == 1:
+    if id == "1":
         return "Python"
-    if id == 2:
+    if id == "2":
         return "C++"
-    if id == 3:
+    if id == "3":
         return "Java"
 
 def getdecision(id):
