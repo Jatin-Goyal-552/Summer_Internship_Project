@@ -1,4 +1,4 @@
-from matplotlib import interactive
+# from matplotlib import interactive
 from .models import *
 from .serializers import *
 from rest_framework import viewsets
