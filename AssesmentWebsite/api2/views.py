@@ -1,3 +1,4 @@
+from matplotlib import interactive
 from .models import *
 from .serializers import *
 from rest_framework import viewsets
@@ -437,6 +438,20 @@ def time(request, pk=None):
         stu.delete()
         return Response({'msg':'Data Deleted'})  
 
+def getlanguage(id):
+    if id == 1:
+        return "Python"
+    if id == 2:
+        return "C++"
+    if id == 3:
+        return "Java"
+
+def getdecision(id):
+    if id == '1':
+        return "Y"
+    else:
+        return "N"
+
 def download(request):
     # global response_id
     # print("============", response_id)
@@ -481,7 +496,7 @@ def download(request):
         correct_answers.append(Question.objects.get(qid = id).correct_option)
         selected_answers.append(Score.objects.get(fevid = evaluation_id, fqid = id).selected_answer)
         marks.append(Score.objects.get(fevid = evaluation_id, fqid = id).marks)
-        decisions.append(Score.objects.get(fevid = evaluation_id, fqid = id).decision)
+        decisions.append(getdecision(Score.objects.get(fevid = evaluation_id, fqid = id).decision))
         
     print("user id", user_id, "programming language",program_language, "levels", levels,  "code_ids", code_ids, "question_ids", question_ids,"correct_answers",correct_answers,"selected_answers",selected_answers,"marks",marks,"decisions",decisions)
         
@@ -489,18 +504,29 @@ def download(request):
     # print("question_bank_level_id", question_bank_level_id1, "code", code1)
     # question1 = Question.objects.filter(fcid = code1)[0].qid
     # question1 = Question.objects.get(qid = question1).correct_option
-    
+    iterative_question_id = []
+    for i in range(6):
+            iterative_question_id.append("Q1")
+            iterative_question_id.append("Q2")
+            iterative_question_id.append("Q3")
+            iterative_question_id.append("Q4")
+            iterative_question_id.append("Q5")
+    print("-------------------------------------------")
+    print(iterative_question_id, len(iterative_question_id))
     n = len(question_ids)
+    print("n",n)
     # responses = Apply.objects.filter(internship=response_id)
-    dic['User'] = [user_id]*n
-    dic['Programming language'] = [program_language]*n
-    dic['Level'] = ([levels[0]]*int(n/3)) + ([levels[1]]*int(n/3)) +  ([levels[3]]*int(n/3))
-    dic['Code']  = ([code_ids[0]]*int(n/6)) +  ([code_ids[1]]*int(n/6)) +  ([code_ids[2]]*int(n/6)) +  ([code_ids[3]]*int(n/6)) + ([code_ids[4]]*int(n/6)) + ([code_ids[5]]*int(n/6))
-    dic['Question'] = question_ids
+    dic['User'] = [Demographic.objects.get(uid = user_id).name]*n
+    dic['Programming language'] = [getlanguage(program_language)]*n
+    dic['Level'] = (["E"]*int(n/3)) + (["M"]*int(n/3)) +  (["H"]*int(n/3))
+    dic['Code']  = (["c1"]*int(n/6)) +  (["c2"]*int(n/6)) +  (["c1"]*int(n/6)) +  (["c2"]*int(n/6)) + (["c1"]*int(n/6)) + (["c2"]*int(n/6))
+    dic['Question'] = iterative_question_id
     dic['Selected answer'] = selected_answers
     dic['Correct answer'] = correct_answers
     dic['Decision'] = decisions
     dic['Marks'] = marks
+    for key in dic:
+        print(key, len(dic[key]))
     # print(([levels[0]]*int(n/2)) + (([levels[1]]*int(n/2))))
     print(dic)
     # for i in range(len(responses)):
@@ -514,7 +540,7 @@ def download(request):
     #     dic['precentage_12'].append(responses[i].precentage_12)
     # print(dic)
     df = pd.DataFrame(dic)
-
+    print(df.head())
     response = HttpResponse(content_type='text/csv')
     # your filename
     response['Content-Disposition'] = 'attachment; filename="data.csv"'
