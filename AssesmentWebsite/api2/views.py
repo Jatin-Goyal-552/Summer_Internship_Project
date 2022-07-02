@@ -440,6 +440,7 @@ def time(request, pk=None):
 def download(request):
     # global response_id
     # print("============", response_id)
+    user_id = 12
     question_ids = []
     correct_answers = []
     selected_answers = []
@@ -447,9 +448,8 @@ def download(request):
     decisions = []
     code_ids = []
     dic = collections.defaultdict(list)
-    user_id = 1
     program_language = Expertise.objects.get(fuid = user_id).programming_language
-    levels = ["1", "2"]
+    levels = ["1", "2", "3"]
     question_bank_id = QuestionBank.objects.get(admin_programming_language = program_language).qbid
     question_bank_level_ids = []
     print("user id", user_id, "programming language",program_language,"question_bank_id",question_bank_id, "levels", levels,  "code_ids", code_ids, "question_ids", question_ids,"correct_answers",correct_answers,"selected_answers",selected_answers,"marks",marks,"decisions",decisions)
@@ -462,6 +462,7 @@ def download(request):
     for id in question_bank_level_ids:
         code_ids.append(Code.objects.filter(fqblid = id)[0].cid)
         code_ids.append(Code.objects.filter(fqblid = id)[1].cid)
+        # code_ids.append(Code.objects.filter(fqblid = id)[].cid)
         
     # question_ids = []
     # correct_answers = []
@@ -472,8 +473,8 @@ def download(request):
         question_ids.append(Question.objects.filter(fcid = id)[0].qid)
         question_ids.append(Question.objects.filter(fcid = id)[1].qid)
         question_ids.append(Question.objects.filter(fcid = id)[2].qid)
-        # question_ids.append(Question.objects.filter(fcid = id)[3].qid)
-        # question_ids.append(Question.objects.filter(fcid = id)[4].qid)
+        question_ids.append(Question.objects.filter(fcid = id)[3].qid)
+        question_ids.append(Question.objects.filter(fcid = id)[4].qid)
     
     evaluation_id = Evaluation.objects.get(ffuid = user_id, ffqbid = question_bank_id).evid
     for id in question_ids:
@@ -493,8 +494,8 @@ def download(request):
     # responses = Apply.objects.filter(internship=response_id)
     dic['User'] = [user_id]*n
     dic['Programming language'] = [program_language]*n
-    dic['Level'] = ([levels[0]]*int(n/2)) + ([levels[1]]*int(n/2))
-    dic['Code']  = ([code_ids[0]]*int(n/4)) +  ([code_ids[1]]*int(n/4)) +  ([code_ids[2]]*int(n/4)) +  ([code_ids[3]]*int(n/4))
+    dic['Level'] = ([levels[0]]*int(n/3)) + ([levels[1]]*int(n/3)) +  ([levels[3]]*int(n/3))
+    dic['Code']  = ([code_ids[0]]*int(n/6)) +  ([code_ids[1]]*int(n/6)) +  ([code_ids[2]]*int(n/6)) +  ([code_ids[3]]*int(n/6)) + ([code_ids[4]]*int(n/6)) + ([code_ids[5]]*int(n/6))
     dic['Question'] = question_ids
     dic['Selected answer'] = selected_answers
     dic['Correct answer'] = correct_answers
