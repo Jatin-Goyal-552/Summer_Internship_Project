@@ -23,5 +23,6 @@ urlpatterns=[
     path('getcode/', views.getcode, name = 'getcode'),
     path('getquestion/', views.getquestion, name = 'getquestion'),
     path('time/', views.time, name='time'),
-    path('time/<pk>', views.time, name='time2')
+    path('time/<pk>', views.time, name='time2'),
+    path('getcsv/', views.getCSV, name = 'getCSV')
 ]

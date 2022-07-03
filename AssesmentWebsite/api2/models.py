@@ -123,3 +123,5 @@ class Time(models.Model):
     fcfid = models.ForeignKey(Code, on_delete=models.CASCADE, null= True)
     question_read_time = models.FloatField(null=True)
     code_read_time = models.FloatField(null=True)
+    
+    
