@@ -407,7 +407,7 @@ def time(request, pk=None):
         # dic['ffevid'] = None
         #   questionbankevaluation_id = 6 
         # language = Expertise.objects.get(fuid=request.session['user_id']).programming_language
-        dic['fevid'] = evaluation_id
+        dic['ffevid'] = evaluation_id
         
         language = Expertise.objects.get(fuid=user_id).programming_language
         temp_questionbank_id = QuestionBank.objects.get(admin_programming_language = language).qbid
@@ -466,6 +466,7 @@ def download(request):
         marks = []
         decisions = []
         code_ids = []
+        time_code = []
         dic = collections.defaultdict(list)
         program_language = Expertise.objects.get(fuid = user_id).programming_language
         levels = ["1", "2", "3"]
@@ -473,6 +474,8 @@ def download(request):
         question_bank_level_ids = []
         print("user id", user_id, "programming language",program_language,"question_bank_id",question_bank_id, "levels", levels,  "code_ids", code_ids, "question_ids", question_ids,"correct_answers",correct_answers,"selected_answers",selected_answers,"marks",marks,"decisions",decisions)
         # print(QuestionBankLevel.objects.filter(fqbid = question_bank_id, qlevel = "1"))
+        
+        
         for index, level in enumerate(levels):
             question_bank_level_ids.append(QuestionBankLevel.objects.filter(fqbid = question_bank_id, qlevel = level)[0].qblid)
             
@@ -501,6 +504,9 @@ def download(request):
             selected_answers.append(Score.objects.get(fevid = evaluation_id, fqid = id).selected_answer)
             marks.append(Score.objects.get(fevid = evaluation_id, fqid = id).marks)
             decisions.append(getdecision(Score.objects.get(fevid = evaluation_id, fqid = id).decision))
+        
+        
+        # for time in 
             
         print("user id", user_id, "programming language",program_language, "levels", levels,  "code_ids", code_ids, "question_ids", question_ids,"correct_answers",correct_answers,"selected_answers",selected_answers,"marks",marks,"decisions",decisions)
             
